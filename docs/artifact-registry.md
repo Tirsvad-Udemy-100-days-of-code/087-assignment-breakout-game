@@ -15,7 +15,7 @@ document of a type. `Primary File` may contain a glob (e.g.
 | SA | Stakeholder Analysis | docs/stakeholder-analysis.md | 002 |
 | PP | Project Plan | docs/project-plan.md | 002 |
 | MIL | Milestone / Gateway | docs/milestones/*.md | 005 |
-| RC | SQA Review Record | docs/sqa/reviews/rc-*.md | 011 |
+| RC | SQA Review Record | docs/sqa/reviews/rc-*.md | 012 |
 | PY | Python Source Code | src/**/*.py | 001 |
 | YML | YAML File | **/*.yml | 001 |
 
