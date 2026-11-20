@@ -9,7 +9,7 @@
 ## Version History
 | Date | Status | Author | Reviewer | Change | Commit |
 | --- | --- | --- | --- | --- | --- |
-| 2026-11-20 | Proposed | Jens Tirsvad Nielsen | S01 | Initial version | pending |
+| 2026-11-20 | Proposed | Jens Tirsvad Nielsen | S01 | Initial version | [fa3a758] |
 
 ---
 
@@ -58,3 +58,4 @@ Go-with-conditions - no Mandatory criterion fails; criterion 14 (check on the pu
 
 [WIKI-001]: ../../wiki
 [QC-WIKI-001]: ../../../framework/qc/artifacts/qc-wiki.md
+[fa3a758]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/087-assignment-breakout-game/commit/fa3a7585928ea0e3b03806ada29fd28ac83fb755
