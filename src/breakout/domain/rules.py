@@ -46,9 +46,10 @@ def hits_paddle(ball: Ball, paddle: Paddle) -> bool:
 
     @param ball The ball after it has moved.
     @param paddle The paddle.
-    @return True when the ball is falling and overlaps the paddle.
+    @return True when the ball is falling, overlaps the paddle and its centre is
+            at or above the paddle centre (so the side and underside miss).
     """
-    return ball.dy < 0 and ball.box.overlaps(paddle.box)
+    return ball.dy < 0 and ball.y >= paddle.y and ball.box.overlaps(paddle.box)
 
 
 def speed_up(ball: Ball) -> Ball:
@@ -104,7 +105,9 @@ def bounce_off_brick(
     When the ball touches several bricks at once, the one it reaches into
     deepest is hit. The ball is reflected on the axis where it reaches into the
     brick the least: a hit on the side reverses dx, a hit from below or above
-    reverses dy.
+    reverses dy. In a corner hit (the two depths differ by less than
+    BRICK_CORNER_TOLERANCE) the axis of the larger absolute velocity component
+    is reflected instead.
 
     @param ball The ball after it has moved.
     @param bricks The bricks that are still standing.
@@ -121,7 +124,11 @@ def bounce_off_brick(
 
     brick = max(touched, key=depth)
     depth_x, depth_y = _overlap_depth(ball.box, brick.box)
-    if depth_x < depth_y:
+    if abs(depth_x - depth_y) < constants.BRICK_CORNER_TOLERANCE:
+        reflect_x = abs(ball.dx) > abs(ball.dy)
+    else:
+        reflect_x = depth_x < depth_y
+    if reflect_x:
         dx = -abs(ball.dx) if ball.x < brick.x else abs(ball.dx)
         return replace(ball, dx=dx), brick
     dy = -abs(ball.dy) if ball.y < brick.y else abs(ball.dy)

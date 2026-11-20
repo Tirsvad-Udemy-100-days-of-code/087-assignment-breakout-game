@@ -48,6 +48,8 @@ PADDLE_BOUNCE_MAX_SIDEWAYS: Final[float] = 0.8
 BALL_SPEEDUP_EVERY: Final[int] = 4
 BALL_SPEEDUP_FACTOR: Final[float] = 1.1
 BALL_MAX_SPEED: Final[float] = 12.0
+## Below this difference (px) of the two overlap depths a brick hit is a corner hit.
+BRICK_CORNER_TOLERANCE: Final[float] = 1.0
 ## @}
 
 ## @name Bricks

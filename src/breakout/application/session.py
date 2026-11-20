@@ -140,7 +140,7 @@ class GameSession:
             return ball
         self._bricks = tuple(b for b in self._bricks if b is not brick)
         self._score += brick.points
-        if brick.points == constants.BRICK_TOP_POINTS and not self._top_row_hit:
+        if brick.is_top_scoring and not self._top_row_hit:
             self._top_row_hit = True
             ball = speed_up(ball)
         return ball

@@ -12,5 +12,10 @@ def test_brick_wall_fits_in_window() -> None:
     assert width <= constants.WINDOW_WIDTH
 
 
+def test_ball_max_speed_is_smaller_than_the_smallest_overlap_window() -> None:
+    window = min(constants.BRICK_HEIGHT, constants.PADDLE_HEIGHT) + constants.BALL_SIZE
+    assert constants.BALL_MAX_SPEED < window
+
+
 def test_every_brick_row_has_points() -> None:
     assert len(constants.BRICK_ROW_COLORS) == len(constants.BRICK_ROW_POINTS)

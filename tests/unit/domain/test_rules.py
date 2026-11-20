@@ -203,6 +203,45 @@ def test_falling_ball_beside_the_paddle_does_not_hit_it() -> None:
     assert not hits_paddle(ball, paddle)
 
 
+def test_falling_ball_below_the_paddle_centre_passes() -> None:
+    paddle = Paddle()
+    ball = Ball(x=0, y=paddle.y - 1, dx=2, dy=-4)
+    assert ball.box.overlaps(paddle.box)
+    assert not hits_paddle(ball, paddle)
+
+
+def test_falling_ball_level_with_the_paddle_centre_hits() -> None:
+    paddle = Paddle()
+    assert hits_paddle(Ball(x=0, y=paddle.y, dx=2, dy=-4), paddle)
+
+
+def test_falling_ball_above_the_paddle_centre_hits() -> None:
+    paddle = Paddle()
+    assert hits_paddle(Ball(x=0, y=paddle.y + 1, dx=2, dy=-4), paddle)
+
+
+def test_corner_hit_moving_mostly_up_reflects_dy() -> None:
+    brick = _brick()
+    # Reaches 3 px into the brick sideways and 3.5 px upwards: a corner hit.
+    ball = Ball(
+        x=brick.box.left - HALF + 3, y=brick.box.bottom - HALF + 3.5, dx=1, dy=4
+    )
+    bounced, hit = bounce_off_brick(ball, (brick,))
+    assert hit == brick
+    assert (bounced.dx, bounced.dy) == (1, -4)
+
+
+def test_corner_hit_moving_mostly_sideways_reflects_dx() -> None:
+    brick = _brick()
+    # Reaches 3.5 px into the brick sideways and 3 px upwards: a corner hit.
+    ball = Ball(
+        x=brick.box.left - HALF + 3.5, y=brick.box.bottom - HALF + 3, dx=4, dy=1
+    )
+    bounced, hit = bounce_off_brick(ball, (brick,))
+    assert hit == brick
+    assert (bounced.dx, bounced.dy) == (-4, 1)
+
+
 def _speed(ball: Ball) -> float:
     return math.hypot(ball.dx, ball.dy)
 

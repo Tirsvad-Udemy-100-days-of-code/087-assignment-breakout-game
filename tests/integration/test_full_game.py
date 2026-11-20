@@ -1,13 +1,15 @@
 """Headless full games: the real session, no window and no Turtle."""
 
+from typing import Final
+
 from breakout import constants
 from breakout.application.session import GameSession
 from breakout.domain.status import GameStatus
 
-MAX_TICKS = 200_000
-TICKS_PER_CATCH_OFFSET = 150
+MAX_TICKS: Final[int] = 200_000
+TICKS_PER_CATCH_OFFSET: Final[int] = 150
 ## Where on the paddle the ball is caught, as a share of the half paddle width.
-CATCH_OFFSETS = (-0.7, 0.3, -0.3, 0.7)
+CATCH_OFFSETS: Final[tuple[float, ...]] = (-0.7, 0.3, -0.3, 0.7)
 
 
 def _catch_offset(tick: int) -> float:
@@ -43,8 +45,20 @@ def test_perfect_paddle_clears_the_wall_and_wins() -> None:
 def test_paddle_parked_in_a_corner_loses_all_lives() -> None:
     session = GameSession()
     session.move_paddle_to(constants.LEFT_WALL)
+    paddle_was_hit = False
     for _ in range(MAX_TICKS):
         if session.status is not GameStatus.PLAYING:
             break
+        was_falling, lives = session.ball.dy < 0, session.lives
         session.tick()
+        # The wall of bricks is above y = 0, so a falling ball that turns upwards
+        # below it was bounced by the paddle, unless a new ball was just served.
+        if (
+            was_falling
+            and session.lives == lives
+            and session.ball.dy > 0
+            and session.ball.y < 0
+        ):
+            paddle_was_hit = True
     assert (session.status, session.lives) == (GameStatus.LOST, 0)
+    assert not paddle_was_hit

@@ -24,6 +24,11 @@ class Brick:
         """@brief The area the brick covers."""
         return Box(self.x, self.y, self.width, self.height)
 
+    @property
+    def is_top_scoring(self) -> bool:
+        """@brief Whether the brick is worth the most points (a top-row brick)."""
+        return self.points == constants.BRICK_TOP_POINTS
+
 
 def build_wall() -> tuple[Brick, ...]:
     """@brief Build the wall of bricks from the layout in constants.
