@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "breakout-game"
+version = "0.1.0"
+description = "Breakout clone built with Python Turtle (Day 87 of 100 Days of Code)."
+readme = "README.md"
+requires-python = ">=3.13"
+license = { file = "LICENSE" }
+authors = [{ name = "Jens Tirsvad Nielsen" }]
+keywords = ["breakout", "turtle", "game", "100-days-of-code"]
+classifiers = [
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Games/Entertainment :: Arcade",
+]
+# The game runs on the standard library only (turtle needs Tk).
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-cov>=5", "ruff>=0.6", "mypy>=1.11"]
+
+[project.scripts]
+breakout = "breakout.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-ra"
+
+[tool.coverage.run]
+source = ["breakout"]
+omit = ["*/presentation/*", "*/__main__.py"]
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+src = ["src", "tests"]
+extend-exclude = [".venv", "framework", "build"]
+
+[tool.ruff.lint]
+# Docstrings are Doxygen blocks (@brief, @param), so pydocstyle (D) is not used.
+select = ["E", "F", "I", "N", "UP", "B"]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+mypy_path = "src"
