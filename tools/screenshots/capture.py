@@ -15,15 +15,22 @@ from breakout import constants
 from breakout.presentation.turtle_ui.game import Game
 
 ## Frames to play before the picture is taken, per step (0 is the empty window).
-FRAMES_BY_STEP = {0: 0, 1: 0, 2: 45, 3: 90, 4: 20, 5: 400, 6: 2600, 7: 900}
+FRAMES_BY_STEP = {0: 0, 1: 0, 2: 70, 3: 270, 4: 20, 5: 400, 6: 2600, 7: 900}
 
 
 def autopilot(game: Game) -> None:
-    """@brief Move the paddle under the ball, when the step has both."""
-    paddle = getattr(game, "paddle", None)
-    ball = getattr(game, "ball", None)
-    if paddle is not None and ball is not None:
-        paddle.move_to(ball.xcor())
+    """@brief Move the paddle under the ball, when the step has a ball."""
+    session = getattr(game, "session", None)
+    ball = getattr(session, "ball", None)
+    if session is not None and ball is not None:
+        session.move_paddle_to(ball.x)
+
+
+def prepare(game: Game, step: int) -> None:
+    """@brief Put the game in a state that shows the step well."""
+    session = getattr(game, "session", None)
+    if step == 1 and session is not None:
+        session.move_paddle_to(-150)
 
 
 def save_png(game: Game, path: str) -> None:
@@ -44,6 +51,7 @@ def main() -> None:
     """@brief Play the frames of the step and save the picture."""
     step, path = int(sys.argv[1]), sys.argv[2]
     game = Game()
+    prepare(game, step)
     try:
         for _ in range(FRAMES_BY_STEP[step]):
             autopilot(game)

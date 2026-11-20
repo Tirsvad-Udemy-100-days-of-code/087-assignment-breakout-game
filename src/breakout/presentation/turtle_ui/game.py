@@ -3,18 +3,39 @@
 """
 
 from breakout import constants
+from breakout.application.session import GameSession
+from breakout.presentation.turtle_ui.paddle import Paddle
 from breakout.presentation.turtle_ui.screen import create_screen
 
 
 class Game:
-    """@brief The running game: owns the window and the frame loop."""
+    """@brief The running game: the window, the views and the frame loop."""
 
     def __init__(self) -> None:
-        """@brief Create the window."""
+        """@brief Create the window, the views and the key bindings."""
         self.screen = create_screen()
+        self.session = GameSession()
+        self.paddle = Paddle(self.session.paddle)
+        self._bind_keys()
+
+    def _bind_keys(self) -> None:
+        """@brief Connect the arrow keys to the paddle."""
+        self.screen.listen()
+        self.screen.onkeypress(self.go_left, constants.KEY_LEFT)
+        self.screen.onkeypress(self.go_right, constants.KEY_RIGHT)
+
+    def go_left(self) -> None:
+        """@brief Move the paddle one step to the left."""
+        self.session.move_paddle(-1)
+
+    def go_right(self) -> None:
+        """@brief Move the paddle one step to the right."""
+        self.session.move_paddle(1)
 
     def tick(self) -> None:
         """@brief Advance the game by one frame and redraw the window."""
+        self.session.tick()
+        self.paddle.render(self.session.paddle)
         self.screen.update()
 
     def run(self) -> None:
