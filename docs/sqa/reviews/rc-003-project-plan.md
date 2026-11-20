@@ -9,7 +9,7 @@
 ## Version History
 | Date | Status | Author | Reviewer | Change | Commit |
 | --- | --- | --- | --- | --- | --- |
-| 2026-11-20 | Proposed | Jens Tirsvad Nielsen | S01 | Initial version | pending |
+| 2026-11-20 | Proposed | Jens Tirsvad Nielsen | S01 | Initial version | [d4bf2df] |
 
 ---
 
@@ -72,3 +72,4 @@ Go - all Mandatory criteria pass; the Gantt chart is not rendered because no Pla
 [PP-001]: ../../project-plan.md
 [QC-PP-001]: ../../../framework/qc/artifacts/qc-project-plan.md
 [QC-LANG-001]: ../../../framework/qc/artifacts/qc-language-domain.md
+[d4bf2df]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/087-assignment-breakout-game/commit/d4bf2df2d88712f1b4e71c76be15fb497ac94ed4

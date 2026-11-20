@@ -11,7 +11,7 @@
 ## Version History
 | Date | Status | Author | Reviewer | Change | Commit |
 | --- | --- | --- | --- | --- | --- |
-| 2026-11-20 | Accepted | Jens Tirsvad Nielsen | S01 | Initial version; reviewed Go in RC-003, stand-in review, not independent | pending |
+| 2026-11-20 | Accepted | Jens Tirsvad Nielsen | S01 | Initial version; reviewed Go in RC-003, stand-in review, not independent | [d4bf2df] |
 
 ---
 
@@ -92,3 +92,4 @@ A No-Go at a gateway stops the later gateways; the failed work is fixed and re-r
 [MIL-002]: ./milestones/mil-002-steps-1-3-paddle-ball.md
 [MIL-003]: ./milestones/mil-003-steps-4-7-bricks-game.md
 [MIL-004]: ./milestones/mil-004-wiki-release.md
+[d4bf2df]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/087-assignment-breakout-game/commit/d4bf2df2d88712f1b4e71c76be15fb497ac94ed4
