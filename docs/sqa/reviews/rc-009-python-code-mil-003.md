@@ -9,7 +9,7 @@
 ## Version History
 | Date | Status | Author | Reviewer | Change | Commit |
 | --- | --- | --- | --- | --- | --- |
-| 2026-11-20 | Proposed | Jens Tirsvad Nielsen | S01 | Initial version | pending |
+| 2026-11-20 | Proposed | Jens Tirsvad Nielsen | S01 | Initial version | [f227837] |
 
 ---
 
@@ -59,3 +59,4 @@ Go - all Mandatory criteria pass; the Optional finding on criterion 13 stays acc
 
 [PY-002]: ../../../src
 [QC-PY-001]: ../../../framework/qc/code/qc-programming-python.md
+[f227837]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/087-assignment-breakout-game/commit/f227837e1071de28619212d9c1305b3c3edaa408
