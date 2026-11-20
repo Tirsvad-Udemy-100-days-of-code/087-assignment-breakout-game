@@ -24,11 +24,14 @@ class Bricks:
             self._turtles[brick] = turtle
 
     def render(self, bricks: tuple[Brick, ...]) -> None:
-        """@brief Hide the turtles of the bricks that are gone.
+        """@brief Hide the turtles of the bricks that are gone, show the others.
 
         @param bricks The bricks that are still standing.
         """
         standing = set(bricks)
         for brick, turtle in self._turtles.items():
-            if brick not in standing and turtle.isvisible():
+            if brick in standing:
+                if not turtle.isvisible():
+                    turtle.showturtle()
+            elif turtle.isvisible():
                 turtle.hideturtle()

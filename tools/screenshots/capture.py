@@ -25,14 +25,23 @@ FRAMES_BY_STEP = {0: 0, 1: 0, 2: 70, 3: 270, 4: 20, 5: 400, 6: 2600, 7: 900}
 CATCH_OFFSETS = (-0.7, 0.3, -0.3, 0.7)
 
 
-def autopilot(game: Game, frame: int) -> None:
+## Steps whose picture shows a lost game: the paddle stays out of the way.
+IDLE_STEPS = {6}
+## Where the idle paddle stands, far from where the ball comes down.
+IDLE_PADDLE_X = -330
+
+
+def autopilot(game: Game, frame: int, step: int) -> None:
     """@brief Keep the paddle under the ball, catching it at changing places.
 
     @param game The game.
     @param frame The number of the frame, to vary where the ball is caught.
+    @param step The development step being shown.
     """
     session = game.session
-    if hasattr(session, "ball"):
+    if step in IDLE_STEPS:
+        session.move_paddle_to(IDLE_PADDLE_X)
+    elif hasattr(session, "ball"):
         offset = CATCH_OFFSETS[frame // 150 % len(CATCH_OFFSETS)]
         session.move_paddle_to(session.ball.x - offset * session.paddle.width / 2)
 
@@ -64,7 +73,7 @@ def main() -> None:
     prepare(game, step)
     try:
         for frame in range(FRAMES_BY_STEP[step]):
-            autopilot(game, frame)
+            autopilot(game, frame, step)
             game.tick()
         game.tick()
         save_png(game, path)

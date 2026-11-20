@@ -12,6 +12,7 @@ from breakout.domain.rules import (
     bounce_off_walls,
     has_fallen_out,
 )
+from breakout.domain.status import GameStatus
 
 
 class GameSession:
@@ -29,10 +30,25 @@ class GameSession:
         @param ball The ball to start with (default: at the start position).
         @param bricks The wall to start with (default: the full wall).
         """
-        self._paddle = paddle or Paddle()
-        self._ball = ball or Ball.at_start()
-        self._bricks = build_wall() if bricks is None else bricks
+        self._reset(
+            paddle or Paddle(),
+            ball or Ball.at_start(),
+            build_wall() if bricks is None else bricks,
+        )
+
+    def _reset(self, paddle: Paddle, ball: Ball, bricks: tuple[Brick, ...]) -> None:
+        """@brief Set the whole state of a new game.
+
+        @param paddle The paddle to start with.
+        @param ball The ball to start with.
+        @param bricks The wall to start with.
+        """
+        self._paddle = paddle
+        self._ball = ball
+        self._bricks = bricks
         self._score = 0
+        self._lives = constants.STARTING_LIVES
+        self._status = GameStatus.PLAYING
 
     @property
     def paddle(self) -> Paddle:
@@ -48,6 +64,16 @@ class GameSession:
     def score(self) -> int:
         """@brief The points won so far."""
         return self._score
+
+    @property
+    def lives(self) -> int:
+        """@brief The lives the player has left."""
+        return self._lives
+
+    @property
+    def status(self) -> GameStatus:
+        """@brief Whether the game is going on, won or lost."""
+        return self._status
 
     @property
     def bricks(self) -> tuple[Brick, ...]:
@@ -68,12 +94,30 @@ class GameSession:
         """
         self._paddle = self._paddle.moved_to(x)
 
+    def restart(self) -> None:
+        """@brief Start a new game with a full wall, all lives and no score."""
+        self._reset(Paddle(), Ball.at_start(), build_wall())
+
     def tick(self) -> None:
-        """@brief Advance one frame: move the ball, bounce it and score."""
+        """@brief Advance one frame: move the ball, bounce it, score and judge."""
+        if self._status is not GameStatus.PLAYING:
+            return
         ball = bounce_off_walls(self._ball.advanced())
         ball = bounce_off_paddle(ball, self._paddle)
         ball, brick = bounce_off_brick(ball, self._bricks)
         if brick is not None:
             self._bricks = tuple(b for b in self._bricks if b is not brick)
             self._score += brick.points
-        self._ball = Ball.at_start() if has_fallen_out(ball) else ball
+        self._ball = ball
+        if not self._bricks:
+            self._status = GameStatus.WON
+        elif has_fallen_out(ball):
+            self._lose_a_life()
+
+    def _lose_a_life(self) -> None:
+        """@brief Take a life and serve a new ball, or end the game."""
+        self._lives -= 1
+        if self._lives == 0:
+            self._status = GameStatus.LOST
+        else:
+            self._ball = Ball.at_start()

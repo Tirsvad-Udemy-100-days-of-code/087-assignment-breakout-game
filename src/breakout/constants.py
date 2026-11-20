@@ -86,4 +86,7 @@ SCORE_Y: Final[float] = 250.0
 TEXT_COLOR: Final[str] = "white"
 FONT: Final[tuple[str, int, str]] = ("Courier", 24, "bold")
 MESSAGE_FONT: Final[tuple[str, int, str]] = ("Courier", 36, "bold")
+MESSAGE_Y: Final[float] = -60.0
+WIN_MESSAGE: Final[str] = "YOU WIN!  Press space"
+LOSE_MESSAGE: Final[str] = "GAME OVER  Press space"
 ## @}

@@ -29,6 +29,11 @@ class Game:
         self.screen.listen()
         self.screen.onkeypress(self.go_left, constants.KEY_LEFT)
         self.screen.onkeypress(self.go_right, constants.KEY_RIGHT)
+        self.screen.onkeypress(self.restart, constants.KEY_RESTART)
+
+    def restart(self) -> None:
+        """@brief Start a new game."""
+        self.session.restart()
 
     def go_left(self) -> None:
         """@brief Move the paddle one step to the left."""
@@ -44,7 +49,9 @@ class Game:
         self.bricks.render(self.session.bricks)
         self.paddle.render(self.session.paddle)
         self.ball.render(self.session.ball)
-        self.scoreboard.render(self.session.score)
+        self.scoreboard.render(
+            self.session.score, self.session.lives, self.session.status
+        )
         self.screen.update()
 
     def run(self) -> None:
