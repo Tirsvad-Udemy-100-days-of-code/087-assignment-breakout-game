@@ -9,7 +9,7 @@
 ## Version History
 | Date | Status | Author | Reviewer | Change | Commit |
 | --- | --- | --- | --- | --- | --- |
-| 2026-11-20 | Proposed | Jens Tirsvad Nielsen | S01 | Initial version | pending |
+| 2026-11-20 | Proposed | Jens Tirsvad Nielsen | S01 | Initial version | [83319a2] |
 
 ---
 
@@ -57,3 +57,4 @@ Go - criterion 14 is now Pass on the published wiki; all other criteria carry ov
 
 [WIKI-001]: ../../wiki
 [QC-WIKI-001]: ../../../framework/qc/artifacts/qc-wiki.md
+[83319a2]: https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/087-assignment-breakout-game/commit/83319a293904c9c599ab7b6e5c6a1e157b7bdc00
