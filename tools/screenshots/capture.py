@@ -18,7 +18,7 @@ from breakout.presentation.turtle_ui.game import Game
 STEP_1_PADDLE_X = -150
 
 ## Frames to play before the picture is taken, per step (0 is the empty window).
-FRAMES_BY_STEP = {0: 0, 1: 0, 2: 70, 3: 270, 4: 20, 5: 400, 6: 2600, 7: 900}
+FRAMES_BY_STEP = {0: 0, 1: 0, 2: 70, 3: 270, 4: 20, 5: 400, 6: 2600, 7: 3000}
 
 
 ## Where on the paddle the ball is caught, in turn (-1 left edge, 1 right edge).
