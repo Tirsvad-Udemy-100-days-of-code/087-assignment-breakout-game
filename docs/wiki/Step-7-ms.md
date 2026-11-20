@@ -4,6 +4,8 @@
 
 ![Langkah 7: Peningkatan kelajuan dan kemasan](https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/087-assignment-breakout-game/raw/branch/main/docs/images/step-7.png)
 
+![Satu permainan penuh dari mula hingga menang](https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/087-assignment-breakout-game/raw/branch/main/docs/images/game.gif)
+
 ## Apa yang kami bina
 
 - Bola menjadi 10 % lebih laju selepas setiap pukulan dayung yang keempat dan kali pertama ia terkena bata merah, sehingga kelajuan maksimum.

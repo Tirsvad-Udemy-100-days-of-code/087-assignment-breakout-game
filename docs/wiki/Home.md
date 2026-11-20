@@ -4,6 +4,8 @@
 
 A clone of the 1976 arcade game Breakout, built with Python Turtle as the Day 87 assignment of the Udemy course "100 Days of Code: The Complete Python Pro Bootcamp". The game has a paddle, a ball, a wall of coloured bricks, a score, three lives and a win or game over.
 
+![A whole game played from start to win](https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/087-assignment-breakout-game/raw/branch/main/docs/images/game.gif)
+
 The project was built in seven steps. Every step has a screenshot and a page that explains what we built and what we gained from it.
 
 ## Pages

@@ -4,6 +4,8 @@
 
 ![Trin 7: Hastighedsforøgelse og finpudsning](https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/087-assignment-breakout-game/raw/branch/main/docs/images/step-7.png)
 
+![Et helt spil fra start til sejr](https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/087-assignment-breakout-game/raw/branch/main/docs/images/game.gif)
+
 ## Hvad vi byggede
 
 - Bolden bliver 10 % hurtigere efter hvert fjerde træf på batten og første gang den rammer en rød klods, op til en maksimal fart.
