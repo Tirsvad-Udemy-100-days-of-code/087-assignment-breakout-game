@@ -9,7 +9,6 @@ Usage: python capture.py <step 0-7> <output.png>
 
 import subprocess
 import sys
-import time
 import tkinter
 
 from breakout import constants
@@ -50,7 +49,6 @@ def main() -> None:
             autopilot(game)
             game.tick()
         game.tick()
-        time.sleep(0.3)
         save_png(game, path)
     except tkinter.TclError as error:
         sys.exit(f"window closed early: {error}")
