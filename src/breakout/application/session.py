@@ -3,7 +3,9 @@
 """
 
 from breakout import constants
+from breakout.domain.ball import Ball
 from breakout.domain.paddle import Paddle
+from breakout.domain.rules import bounce_off_walls, has_fallen_out
 
 
 class GameSession:
@@ -12,6 +14,7 @@ class GameSession:
     def __init__(self) -> None:
         """@brief Start a new game."""
         self.paddle = Paddle()
+        self.ball = Ball.at_start()
 
     def move_paddle(self, direction: int) -> None:
         """@brief Move the paddle one step.
@@ -28,4 +31,7 @@ class GameSession:
         self.paddle = self.paddle.moved_to(x)
 
     def tick(self) -> None:
-        """@brief Advance the game by one frame."""
+        """@brief Advance the game by one frame: move the ball and bounce it."""
+        self.ball = bounce_off_walls(self.ball.advanced())
+        if has_fallen_out(self.ball):
+            self.ball = Ball.at_start()

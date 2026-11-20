@@ -25,3 +25,17 @@ def test_paddle_cannot_leave_the_window() -> None:
     for _ in range(100):
         session.move_paddle(1)
     assert session.paddle.box.right == constants.RIGHT_WALL
+
+
+def test_tick_moves_the_ball() -> None:
+    session = GameSession()
+    start = session.ball
+    session.tick()
+    assert session.ball.y == start.y + start.dy
+
+
+def test_ball_that_falls_out_starts_again() -> None:
+    session = GameSession()
+    for _ in range(300):
+        session.tick()
+    assert constants.BOTTOM_WALL <= session.ball.y <= constants.TOP_WALL

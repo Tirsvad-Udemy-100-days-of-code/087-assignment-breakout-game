@@ -4,6 +4,7 @@
 
 from breakout import constants
 from breakout.application.session import GameSession
+from breakout.presentation.turtle_ui.ball import Ball
 from breakout.presentation.turtle_ui.paddle import Paddle
 from breakout.presentation.turtle_ui.screen import create_screen
 
@@ -16,6 +17,7 @@ class Game:
         self.screen = create_screen()
         self.session = GameSession()
         self.paddle = Paddle(self.session.paddle)
+        self.ball = Ball(self.session.ball)
         self._bind_keys()
 
     def _bind_keys(self) -> None:
@@ -36,6 +38,7 @@ class Game:
         """@brief Advance the game by one frame and redraw the window."""
         self.session.tick()
         self.paddle.render(self.session.paddle)
+        self.ball.render(self.session.ball)
         self.screen.update()
 
     def run(self) -> None:
