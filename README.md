@@ -29,6 +29,14 @@ The repository is built in seven small steps. Each step has a screenshot below a
 | `docs/` | Project documents, screenshots (`docs/images/`) and the wiki sources (`docs/wiki/`) |
 | `scripts/`, `tools/` | The local security scan and the screenshot container |
 
+### The steps
+
+| Step | What it adds | Screenshot |
+| --- | --- | --- |
+| 1 | A black window and a paddle that follows the arrow keys | ![Step 1: window and paddle](docs/images/step-1.png) |
+| 2 | A moving ball that bounces off the top and side walls | ![Step 2: ball and wall bounce](docs/images/step-2.png) |
+| 3 | The ball bounces off the paddle at an angle that depends on where it hits | ![Step 3: paddle bounce](docs/images/step-3.png) |
+
 Source comments are Doxygen blocks; `Doxyfile` builds the reference.
 
 ## 📋 Requirements
