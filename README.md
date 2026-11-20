@@ -141,6 +141,7 @@ The documents a newcomer needs, in reading order.
 | [Business Case][BC-001] | Why the project exists, its scope and success criteria |
 | [Stakeholder Analysis][SA-001] | Who is involved; the stakeholder IDs used for owners and reviewers |
 | [Project Plan][PP-001] | The gateways and their schedule |
+| [Wiki][documentation] | One page per development step and a reflection, in English, Danish and Bahasa Malaysia |
 | [Milestones][milestones] | One document per gateway: Go/No-Go criteria and tasks |
 | [Artifact registry][registry] | Where each artifact type lives, the next version, the PO language and domain |
 | [Framework README][framework-readme] | The framework this project uses |
