@@ -42,8 +42,8 @@ BALL_START_Y: Final[float] = -230.0
 BALL_START_DX: Final[float] = 3.0
 BALL_START_DY: Final[float] = 4.0
 BALL_COLOR: Final[str] = "white"
-## Largest horizontal speed the paddle can give the ball.
-BALL_MAX_DX: Final[float] = 7.0
+## Share of the ball speed that goes sideways when the ball hits the paddle edge.
+PADDLE_BOUNCE_MAX_SIDEWAYS: Final[float] = 0.8
 ## Speed-up: every BALL_SPEEDUP_EVERY paddle hits the speed grows by this factor.
 BALL_SPEEDUP_EVERY: Final[int] = 4
 BALL_SPEEDUP_FACTOR: Final[float] = 1.1

@@ -7,7 +7,7 @@ import turtle
 from breakout import constants
 
 
-def create_screen() -> turtle._Screen:
+def create_screen() -> turtle.TurtleScreen:
     """@brief Create the black game window.
 
     @return The Turtle screen, with automatic redraw switched off so the game

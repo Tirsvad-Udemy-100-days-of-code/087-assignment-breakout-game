@@ -29,6 +29,14 @@ The repository is built in seven small steps. Each step has a screenshot below a
 | `docs/` | Project documents, screenshots (`docs/images/`) and the wiki sources (`docs/wiki/`) |
 | `scripts/`, `tools/` | The local security scan and the screenshot container |
 
+### The steps
+
+| Step | What it adds | Screenshot |
+| --- | --- | --- |
+| 1 | A black window and a paddle that follows the arrow keys | ![Step 1: window and paddle](docs/images/step-1.png) |
+| 2 | A moving ball that bounces off the top and side walls | ![Step 2: ball and wall bounce](docs/images/step-2.png) |
+| 3 | The ball bounces off the paddle at an angle that depends on where it hits | ![Step 3: paddle bounce](docs/images/step-3.png) |
+
 Source comments are Doxygen blocks; `Doxyfile` builds the reference.
 
 ## 📋 Requirements
@@ -86,7 +94,8 @@ Controls: `Left` and `Right` arrow keys move the paddle, `space` starts a new ga
 python -m pytest
 python -m pytest --cov            # with coverage; the rules must stay above 90 %
 python -m ruff check .            # lint
-python -m mypy src tests          # types
+python -m mypy src tests tools   # types
+lint-imports                       # the layers point inward
 ```
 
 The tests cover the game rules and never open a window. A screenshot of a step is taken in a Docker container with a virtual display, never on your desktop:
