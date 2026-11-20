@@ -28,4 +28,4 @@ Keep the rules and the drawing apart. Once the game rules were plain Python func
 - Choose the frame loop with `ontimer` from the start instead of `time.sleep`.
 - Add sound, levels and a high-score list. These were out of scope for this assignment.
 
-[Back to Home]({link('Home', L)})
+[Back to Home](Home)
