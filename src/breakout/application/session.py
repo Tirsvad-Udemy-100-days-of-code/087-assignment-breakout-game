@@ -4,6 +4,7 @@
 
 from breakout import constants
 from breakout.domain.ball import Ball
+from breakout.domain.brick import Brick, build_wall
 from breakout.domain.paddle import Paddle
 from breakout.domain.rules import bounce_off_paddle, bounce_off_walls, has_fallen_out
 
@@ -11,14 +12,21 @@ from breakout.domain.rules import bounce_off_paddle, bounce_off_walls, has_falle
 class GameSession:
     """@brief The game state, driven by player commands and by ticks."""
 
-    def __init__(self, paddle: Paddle | None = None, ball: Ball | None = None) -> None:
+    def __init__(
+        self,
+        paddle: Paddle | None = None,
+        ball: Ball | None = None,
+        bricks: tuple[Brick, ...] | None = None,
+    ) -> None:
         """@brief Start a new game.
 
         @param paddle The paddle to start with (default: in the middle).
         @param ball The ball to start with (default: at the start position).
+        @param bricks The wall to start with (default: the full wall).
         """
         self._paddle = paddle or Paddle()
         self._ball = ball or Ball.at_start()
+        self._bricks = build_wall() if bricks is None else bricks
 
     @property
     def paddle(self) -> Paddle:
@@ -29,6 +37,11 @@ class GameSession:
     def ball(self) -> Ball:
         """@brief The ball."""
         return self._ball
+
+    @property
+    def bricks(self) -> tuple[Brick, ...]:
+        """@brief The bricks that are still standing."""
+        return self._bricks
 
     def move_paddle(self, direction: int) -> None:
         """@brief Move the paddle one step.

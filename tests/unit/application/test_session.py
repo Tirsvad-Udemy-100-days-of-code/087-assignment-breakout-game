@@ -1,6 +1,7 @@
 from breakout import constants
 from breakout.application.session import GameSession
 from breakout.domain.ball import Ball
+from breakout.domain.brick import build_wall
 from breakout.domain.paddle import Paddle
 
 
@@ -58,3 +59,8 @@ def test_paddle_moves_several_steps_at_once() -> None:
     session = GameSession()
     session.move_paddle(2)
     assert session.paddle.x == 2 * constants.PADDLE_STEP
+
+
+def test_new_session_has_a_full_wall() -> None:
+    session = GameSession()
+    assert len(session.bricks) == len(build_wall())
