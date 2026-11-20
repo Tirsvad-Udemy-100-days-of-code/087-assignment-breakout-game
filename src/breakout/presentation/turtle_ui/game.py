@@ -7,6 +7,7 @@ from breakout.application.session import GameSession
 from breakout.presentation.turtle_ui.ball import Ball
 from breakout.presentation.turtle_ui.bricks import Bricks
 from breakout.presentation.turtle_ui.paddle import Paddle
+from breakout.presentation.turtle_ui.scoreboard import Scoreboard
 from breakout.presentation.turtle_ui.screen import create_screen
 
 
@@ -20,6 +21,7 @@ class Game:
         self.bricks = Bricks(self.session.bricks)
         self.paddle = Paddle(self.session.paddle)
         self.ball = Ball(self.session.ball)
+        self.scoreboard = Scoreboard()
         self._bind_keys()
 
     def _bind_keys(self) -> None:
@@ -42,6 +44,7 @@ class Game:
         self.bricks.render(self.session.bricks)
         self.paddle.render(self.session.paddle)
         self.ball.render(self.session.ball)
+        self.scoreboard.render(self.session.score)
         self.screen.update()
 
     def run(self) -> None:

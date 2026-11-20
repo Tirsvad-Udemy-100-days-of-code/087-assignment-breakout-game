@@ -4,8 +4,10 @@ import pytest
 
 from breakout import constants
 from breakout.domain.ball import Ball
+from breakout.domain.brick import Brick
 from breakout.domain.paddle import Paddle
 from breakout.domain.rules import (
+    bounce_off_brick,
     bounce_off_paddle,
     bounce_off_walls,
     has_fallen_out,
@@ -132,3 +134,52 @@ def test_hit_beyond_the_paddle_edge_uses_the_largest_angle() -> None:
     ball = Ball(x=paddle.box.right + 2, y=paddle.box.top, dx=0, dy=-5)
     bounced = bounce_off_paddle(ball, paddle)
     assert bounced.dx == pytest.approx(constants.PADDLE_BOUNCE_MAX_SIDEWAYS * 5)
+
+
+def _brick() -> Brick:
+    return Brick(x=0, y=100, color="red", points=7)
+
+
+def test_ball_far_from_the_bricks_hits_nothing() -> None:
+    ball = Ball(x=0, y=0, dx=3, dy=4)
+    assert bounce_off_brick(ball, (_brick(),)) == (ball, None)
+
+
+def test_ball_hitting_a_brick_from_below_goes_down() -> None:
+    brick = _brick()
+    ball = Ball(x=0, y=brick.box.bottom - 2, dx=3, dy=4)
+    bounced, hit = bounce_off_brick(ball, (brick,))
+    assert hit == brick
+    assert (bounced.dx, bounced.dy) == (3, -4)
+
+
+def test_ball_hitting_a_brick_from_above_goes_up() -> None:
+    brick = _brick()
+    ball = Ball(x=0, y=brick.box.top + 2, dx=3, dy=-4)
+    bounced, hit = bounce_off_brick(ball, (brick,))
+    assert hit == brick
+    assert (bounced.dx, bounced.dy) == (3, 4)
+
+
+def test_ball_hitting_a_brick_on_the_left_side_goes_left() -> None:
+    brick = _brick()
+    ball = Ball(x=brick.box.left - 2, y=brick.y, dx=3, dy=1)
+    bounced, hit = bounce_off_brick(ball, (brick,))
+    assert hit == brick
+    assert (bounced.dx, bounced.dy) == (-3, 1)
+
+
+def test_ball_hitting_a_brick_on_the_right_side_goes_right() -> None:
+    brick = _brick()
+    ball = Ball(x=brick.box.right + 2, y=brick.y, dx=-3, dy=1)
+    bounced, hit = bounce_off_brick(ball, (brick,))
+    assert hit == brick
+    assert (bounced.dx, bounced.dy) == (3, 1)
+
+
+def test_ball_touching_two_bricks_hits_the_one_it_reaches_into_deepest() -> None:
+    left = Brick(x=-30, y=100, color="red", points=7)
+    right = Brick(x=30, y=100, color="green", points=3)
+    ball = Ball(x=10, y=100 - 12, dx=0, dy=4)
+    _, hit = bounce_off_brick(ball, (left, right))
+    assert hit == right

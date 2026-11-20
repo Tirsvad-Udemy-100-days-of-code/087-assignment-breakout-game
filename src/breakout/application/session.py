@@ -6,7 +6,12 @@ from breakout import constants
 from breakout.domain.ball import Ball
 from breakout.domain.brick import Brick, build_wall
 from breakout.domain.paddle import Paddle
-from breakout.domain.rules import bounce_off_paddle, bounce_off_walls, has_fallen_out
+from breakout.domain.rules import (
+    bounce_off_brick,
+    bounce_off_paddle,
+    bounce_off_walls,
+    has_fallen_out,
+)
 
 
 class GameSession:
@@ -27,6 +32,7 @@ class GameSession:
         self._paddle = paddle or Paddle()
         self._ball = ball or Ball.at_start()
         self._bricks = build_wall() if bricks is None else bricks
+        self._score = 0
 
     @property
     def paddle(self) -> Paddle:
@@ -37,6 +43,11 @@ class GameSession:
     def ball(self) -> Ball:
         """@brief The ball."""
         return self._ball
+
+    @property
+    def score(self) -> int:
+        """@brief The points won so far."""
+        return self._score
 
     @property
     def bricks(self) -> tuple[Brick, ...]:
@@ -58,8 +69,11 @@ class GameSession:
         self._paddle = self._paddle.moved_to(x)
 
     def tick(self) -> None:
-        """@brief Advance one frame: move the ball and bounce it."""
+        """@brief Advance one frame: move the ball, bounce it and score."""
         ball = bounce_off_walls(self._ball.advanced())
-        self._ball = bounce_off_paddle(ball, self._paddle)
-        if has_fallen_out(self._ball):
-            self._ball = Ball.at_start()
+        ball = bounce_off_paddle(ball, self._paddle)
+        ball, brick = bounce_off_brick(ball, self._bricks)
+        if brick is not None:
+            self._bricks = tuple(b for b in self._bricks if b is not brick)
+            self._score += brick.points
+        self._ball = Ball.at_start() if has_fallen_out(ball) else ball

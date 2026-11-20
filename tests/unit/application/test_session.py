@@ -1,7 +1,7 @@
 from breakout import constants
 from breakout.application.session import GameSession
 from breakout.domain.ball import Ball
-from breakout.domain.brick import build_wall
+from breakout.domain.brick import Brick, build_wall
 from breakout.domain.paddle import Paddle
 
 
@@ -64,3 +64,25 @@ def test_paddle_moves_several_steps_at_once() -> None:
 def test_new_session_has_a_full_wall() -> None:
     session = GameSession()
     assert len(session.bricks) == len(build_wall())
+
+
+def _session_with_one_brick() -> tuple[GameSession, Brick]:
+    brick = Brick(x=0, y=0, color="red", points=7)
+    ball = Ball(x=0, y=brick.box.bottom - 5, dx=0, dy=4)
+    return GameSession(ball=ball, bricks=(brick,)), brick
+
+
+def test_hitting_a_brick_removes_it() -> None:
+    session, _ = _session_with_one_brick()
+    session.tick()
+    assert session.bricks == ()
+
+
+def test_hitting_a_brick_adds_its_points() -> None:
+    session, brick = _session_with_one_brick()
+    session.tick()
+    assert session.score == brick.points
+
+
+def test_score_starts_at_zero() -> None:
+    assert GameSession().score == 0

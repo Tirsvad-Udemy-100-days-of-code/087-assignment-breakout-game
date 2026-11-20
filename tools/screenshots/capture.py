@@ -21,11 +21,20 @@ STEP_1_PADDLE_X = -150
 FRAMES_BY_STEP = {0: 0, 1: 0, 2: 70, 3: 270, 4: 20, 5: 400, 6: 2600, 7: 900}
 
 
-def autopilot(game: Game) -> None:
-    """@brief Move the paddle under the ball, when the step has a ball."""
+## Where on the paddle the ball is caught, in turn (-1 left edge, 1 right edge).
+CATCH_OFFSETS = (-0.7, 0.3, -0.3, 0.7)
+
+
+def autopilot(game: Game, frame: int) -> None:
+    """@brief Keep the paddle under the ball, catching it at changing places.
+
+    @param game The game.
+    @param frame The number of the frame, to vary where the ball is caught.
+    """
     session = game.session
     if hasattr(session, "ball"):
-        session.move_paddle_to(session.ball.x)
+        offset = CATCH_OFFSETS[frame // 150 % len(CATCH_OFFSETS)]
+        session.move_paddle_to(session.ball.x - offset * session.paddle.width / 2)
 
 
 def prepare(game: Game, step: int) -> None:
@@ -54,8 +63,8 @@ def main() -> None:
     game = Game()
     prepare(game, step)
     try:
-        for _ in range(FRAMES_BY_STEP[step]):
-            autopilot(game)
+        for frame in range(FRAMES_BY_STEP[step]):
+            autopilot(game, frame)
             game.tick()
         game.tick()
         save_png(game, path)

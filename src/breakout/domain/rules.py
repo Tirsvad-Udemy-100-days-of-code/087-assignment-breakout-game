@@ -7,6 +7,8 @@ from dataclasses import replace
 
 from breakout import constants
 from breakout.domain.ball import Ball
+from breakout.domain.brick import Brick
+from breakout.domain.geometry import Box
 from breakout.domain.paddle import Paddle
 
 
@@ -57,3 +59,45 @@ def bounce_off_paddle(ball: Ball, paddle: Paddle) -> Ball:
     dx = offset * constants.PADDLE_BOUNCE_MAX_SIDEWAYS * speed
     dy = math.sqrt(speed**2 - dx**2)
     return replace(ball, y=paddle.box.top + ball.size / 2, dx=dx, dy=dy)
+
+
+def _overlap_depth(a: Box, b: Box) -> tuple[float, float]:
+    """@brief How far two overlapping boxes reach into each other.
+
+    @return The overlap along x and along y.
+    """
+    depth_x = min(a.right, b.right) - max(a.left, b.left)
+    depth_y = min(a.top, b.top) - max(a.bottom, b.bottom)
+    return depth_x, depth_y
+
+
+def bounce_off_brick(
+    ball: Ball, bricks: tuple[Brick, ...]
+) -> tuple[Ball, Brick | None]:
+    """@brief Bounce the ball off the brick it hits, if any.
+
+    When the ball touches several bricks at once, the one it reaches into
+    deepest is hit. The ball is reflected on the axis where it reaches into the
+    brick the least: a hit on the side reverses dx, a hit from below or above
+    reverses dy.
+
+    @param ball The ball after it has moved.
+    @param bricks The bricks that are still standing.
+    @return The ball (bounced when a brick was hit) and the brick that was hit,
+            or the same ball and None.
+    """
+    touched = [brick for brick in bricks if ball.box.overlaps(brick.box)]
+    if not touched:
+        return ball, None
+
+    def depth(brick: Brick) -> float:
+        depth_x, depth_y = _overlap_depth(ball.box, brick.box)
+        return depth_x * depth_y
+
+    brick = max(touched, key=depth)
+    depth_x, depth_y = _overlap_depth(ball.box, brick.box)
+    if depth_x < depth_y:
+        dx = -abs(ball.dx) if ball.x < brick.x else abs(ball.dx)
+        return replace(ball, dx=dx), brick
+    dy = -abs(ball.dy) if ball.y < brick.y else abs(ball.dy)
+    return replace(ball, dy=dy), brick
