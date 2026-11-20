@@ -6,9 +6,7 @@ from turtle import Turtle
 
 from breakout import constants
 from breakout.domain.paddle import Paddle as PaddleState
-
-## Size in pixels of the built-in Turtle "square" shape.
-SQUARE_SIZE = 20
+from breakout.presentation.turtle_ui.shapes import make_block
 
 
 class Paddle(Turtle):
@@ -19,13 +17,8 @@ class Paddle(Turtle):
 
         @param state The paddle to show.
         """
-        super().__init__(shape="square")
-        self.color(constants.PADDLE_COLOR)
-        self.shapesize(
-            stretch_wid=state.height / SQUARE_SIZE,
-            stretch_len=state.width / SQUARE_SIZE,
-        )
-        self.penup()
+        super().__init__()
+        make_block(self, state.width, state.height, constants.PADDLE_COLOR)
         self.render(state)
 
     def render(self, state: PaddleState) -> None:

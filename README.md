@@ -94,7 +94,8 @@ Controls: `Left` and `Right` arrow keys move the paddle, `space` starts a new ga
 python -m pytest
 python -m pytest --cov            # with coverage; the rules must stay above 90 %
 python -m ruff check .            # lint
-python -m mypy src tests          # types
+python -m mypy src tests tools   # types
+lint-imports                       # the layers point inward
 ```
 
 The tests cover the game rules and never open a window. A screenshot of a step is taken in a Docker container with a virtual display, never on your desktop:

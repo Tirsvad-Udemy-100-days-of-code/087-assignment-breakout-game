@@ -14,23 +14,24 @@ import tkinter
 from breakout import constants
 from breakout.presentation.turtle_ui.game import Game
 
+## Where the paddle stands in the picture of step 1.
+STEP_1_PADDLE_X = -150
+
 ## Frames to play before the picture is taken, per step (0 is the empty window).
 FRAMES_BY_STEP = {0: 0, 1: 0, 2: 70, 3: 270, 4: 20, 5: 400, 6: 2600, 7: 900}
 
 
 def autopilot(game: Game) -> None:
     """@brief Move the paddle under the ball, when the step has a ball."""
-    session = getattr(game, "session", None)
-    ball = getattr(session, "ball", None)
-    if session is not None and ball is not None:
-        session.move_paddle_to(ball.x)
+    session = game.session
+    if hasattr(session, "ball"):
+        session.move_paddle_to(session.ball.x)
 
 
 def prepare(game: Game, step: int) -> None:
     """@brief Put the game in a state that shows the step well."""
-    session = getattr(game, "session", None)
-    if step == 1 and session is not None:
-        session.move_paddle_to(-150)
+    if step == 1:
+        game.session.move_paddle_to(STEP_1_PADDLE_X)
 
 
 def save_png(game: Game, path: str) -> None:
@@ -59,7 +60,7 @@ def main() -> None:
         game.tick()
         save_png(game, path)
     except tkinter.TclError as error:
-        sys.exit(f"window closed early: {error}")
+        raise SystemExit(f"window closed early: {error}") from error
 
 
 if __name__ == "__main__":

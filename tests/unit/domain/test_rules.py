@@ -110,3 +110,25 @@ def test_rising_ball_passes_through_the_paddle() -> None:
     paddle = Paddle()
     ball = Ball(x=0, y=paddle.y, dx=2, dy=4)
     assert bounce_off_paddle(ball, paddle) == ball
+
+
+def test_ball_exactly_at_the_right_wall_bounces() -> None:
+    ball = Ball(x=constants.RIGHT_WALL - HALF, y=0, dx=3, dy=4)
+    assert bounce_off_walls(ball).dx == -3
+
+
+def test_ball_exactly_at_the_left_wall_bounces() -> None:
+    ball = Ball(x=constants.LEFT_WALL + HALF, y=0, dx=-3, dy=4)
+    assert bounce_off_walls(ball).dx == 3
+
+
+def test_ball_exactly_at_the_top_wall_bounces() -> None:
+    ball = Ball(x=0, y=constants.TOP_WALL - HALF, dx=3, dy=4)
+    assert bounce_off_walls(ball).dy == -4
+
+
+def test_hit_beyond_the_paddle_edge_uses_the_largest_angle() -> None:
+    paddle = Paddle()
+    ball = Ball(x=paddle.box.right + 2, y=paddle.box.top, dx=0, dy=-5)
+    bounced = bounce_off_paddle(ball, paddle)
+    assert bounced.dx == pytest.approx(constants.PADDLE_BOUNCE_MAX_SIDEWAYS * 5)

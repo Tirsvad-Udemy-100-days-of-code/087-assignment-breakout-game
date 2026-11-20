@@ -8,7 +8,7 @@ from breakout import constants
 from breakout.domain.geometry import Box
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class Ball:
     """@brief The ball: a position and a speed in pixels per tick."""
 

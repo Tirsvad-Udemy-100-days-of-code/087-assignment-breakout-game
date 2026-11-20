@@ -6,9 +6,7 @@ from turtle import Turtle
 
 from breakout import constants
 from breakout.domain.ball import Ball as BallState
-
-## Size in pixels of the built-in Turtle "square" shape.
-SQUARE_SIZE = 20
+from breakout.presentation.turtle_ui.shapes import make_block
 
 
 class Ball(Turtle):
@@ -19,12 +17,8 @@ class Ball(Turtle):
 
         @param state The ball to show.
         """
-        super().__init__(shape="square")
-        self.color(constants.BALL_COLOR)
-        self.shapesize(
-            stretch_wid=state.size / SQUARE_SIZE, stretch_len=state.size / SQUARE_SIZE
-        )
-        self.penup()
+        super().__init__()
+        make_block(self, state.size, state.size, constants.BALL_COLOR)
         self.render(state)
 
     def render(self, state: BallState) -> None:

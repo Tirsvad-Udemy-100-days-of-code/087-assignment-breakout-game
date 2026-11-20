@@ -8,7 +8,7 @@ from breakout import constants
 from breakout.domain.geometry import Box
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class Paddle:
     """@brief The paddle: it moves sideways and never leaves the window."""
 

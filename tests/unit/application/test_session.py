@@ -1,6 +1,7 @@
 from breakout import constants
 from breakout.application.session import GameSession
 from breakout.domain.ball import Ball
+from breakout.domain.paddle import Paddle
 
 
 def test_move_paddle_right_by_one_step() -> None:
@@ -36,15 +37,24 @@ def test_tick_moves_the_ball() -> None:
 
 
 def test_ball_that_falls_out_starts_again() -> None:
-    session = GameSession()
-    session.paddle = session.paddle.moved_to(-300)
-    session.ball = Ball(x=300, y=constants.BOTTOM_WALL - 20, dx=0, dy=-4)
+    session = GameSession(
+        paddle=Paddle().moved_to(-300),
+        ball=Ball(x=300, y=constants.BOTTOM_WALL - 20, dx=0, dy=-4),
+    )
     session.tick()
     assert session.ball == Ball.at_start()
 
 
 def test_ball_dropped_on_the_paddle_bounces_up() -> None:
-    session = GameSession()
-    session.ball = Ball(x=0, y=session.paddle.box.top + 2, dx=0, dy=-4)
+    paddle = Paddle()
+    session = GameSession(
+        paddle=paddle, ball=Ball(x=0, y=paddle.box.top + 2, dx=0, dy=-4)
+    )
     session.tick()
     assert session.ball.dy > 0
+
+
+def test_paddle_moves_several_steps_at_once() -> None:
+    session = GameSession()
+    session.move_paddle(2)
+    assert session.paddle.x == 2 * constants.PADDLE_STEP
