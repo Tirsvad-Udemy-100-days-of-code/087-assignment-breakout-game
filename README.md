@@ -17,6 +17,8 @@ A clone of the 1976 arcade game Breakout, built with Python Turtle as the Day 87
 
 You move a paddle with the left and right arrow keys and bounce a ball against a wall of coloured bricks. Every brick that is hit disappears and adds to the score. You have three lives; you win when the wall is gone.
 
+![A whole game played from start to win](docs/images/game.gif)
+
 The repository is built in seven small steps. Each step has a screenshot below and a wiki page in English, Danish and Bahasa Malaysia that explains what the step taught.
 
 | Part | What it is for |

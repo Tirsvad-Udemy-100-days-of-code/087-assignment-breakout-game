@@ -4,6 +4,8 @@
 
 ![Step 7: Speed-up and polish](https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/087-assignment-breakout-game/raw/branch/main/docs/images/step-7.png)
 
+![A whole game played from start to win](https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/087-assignment-breakout-game/raw/branch/main/docs/images/game.gif)
+
 ## What we built
 
 - The ball gets 10 % faster after every fourth paddle hit and the first time it hits a red brick, up to a maximum speed.

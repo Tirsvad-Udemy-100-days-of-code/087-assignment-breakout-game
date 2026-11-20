@@ -4,6 +4,8 @@
 
 En klon af arkadespillet Breakout fra 1976, bygget med Python Turtle som opgave på dag 87 i Udemy-kurset "100 Days of Code: The Complete Python Pro Bootcamp". Spillet har en bat, en bold, en mur af farvede klodser, point, tre liv og en sejr eller game over.
 
+![Et helt spil fra start til sejr](https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/087-assignment-breakout-game/raw/branch/main/docs/images/game.gif)
+
 Projektet blev bygget i syv trin. Hvert trin har et skærmbillede og en side, der forklarer, hvad vi byggede, og hvad vi fik ud af det.
 
 ## Sider

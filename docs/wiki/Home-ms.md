@@ -4,6 +4,8 @@
 
 Klon permainan arked Breakout dari tahun 1976, dibina dengan Python Turtle sebagai tugasan Hari ke-87 kursus Udemy "100 Days of Code: The Complete Python Pro Bootcamp". Permainan ini mempunyai dayung, bola, dinding bata berwarna, skor, tiga nyawa dan kemenangan atau permainan tamat.
 
+![Satu permainan penuh dari mula hingga menang](https://git.tirsystem.com/Tirsvad-Udemy-100-days-of-code/087-assignment-breakout-game/raw/branch/main/docs/images/game.gif)
+
 Projek ini dibina dalam tujuh langkah. Setiap langkah mempunyai tangkapan skrin dan satu halaman yang menerangkan apa yang kami bina dan apa yang kami peroleh daripadanya.
 
 ## Halaman
