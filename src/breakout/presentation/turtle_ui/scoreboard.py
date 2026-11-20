@@ -13,9 +13,9 @@ class Scoreboard(Turtle):
     def __init__(self) -> None:
         """@brief Create the scoreboard; it writes on the first render."""
         super().__init__()
-        self.hideturtle()
         self.penup()
         self.color(constants.TEXT_COLOR)
+        self.hideturtle()
         self._shown: str | None = None
 
     def render(self, score: int) -> None:
@@ -30,3 +30,4 @@ class Scoreboard(Turtle):
         self.clear()
         self.goto(constants.SCORE_X, constants.SCORE_Y)
         self.write(text, align="center", font=constants.FONT)
+        self.hideturtle()
