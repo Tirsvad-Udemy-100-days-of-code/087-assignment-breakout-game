@@ -4,11 +4,15 @@ import pytest
 
 from breakout import constants
 from breakout.domain.ball import Ball
+from breakout.domain.brick import Brick
 from breakout.domain.paddle import Paddle
 from breakout.domain.rules import (
+    bounce_off_brick,
     bounce_off_paddle,
     bounce_off_walls,
     has_fallen_out,
+    hits_paddle,
+    speed_up,
 )
 
 HALF = constants.BALL_SIZE / 2
@@ -132,3 +136,138 @@ def test_hit_beyond_the_paddle_edge_uses_the_largest_angle() -> None:
     ball = Ball(x=paddle.box.right + 2, y=paddle.box.top, dx=0, dy=-5)
     bounced = bounce_off_paddle(ball, paddle)
     assert bounced.dx == pytest.approx(constants.PADDLE_BOUNCE_MAX_SIDEWAYS * 5)
+
+
+def _brick() -> Brick:
+    return Brick(x=0, y=100, color="red", points=7)
+
+
+def test_ball_far_from_the_bricks_hits_nothing() -> None:
+    ball = Ball(x=0, y=0, dx=3, dy=4)
+    assert bounce_off_brick(ball, (_brick(),)) == (ball, None)
+
+
+def test_ball_hitting_a_brick_from_below_goes_down() -> None:
+    brick = _brick()
+    ball = Ball(x=0, y=brick.box.bottom - 2, dx=3, dy=4)
+    bounced, hit = bounce_off_brick(ball, (brick,))
+    assert hit == brick
+    assert (bounced.dx, bounced.dy) == (3, -4)
+
+
+def test_ball_hitting_a_brick_from_above_goes_up() -> None:
+    brick = _brick()
+    ball = Ball(x=0, y=brick.box.top + 2, dx=3, dy=-4)
+    bounced, hit = bounce_off_brick(ball, (brick,))
+    assert hit == brick
+    assert (bounced.dx, bounced.dy) == (3, 4)
+
+
+def test_ball_hitting_a_brick_on_the_left_side_goes_left() -> None:
+    brick = _brick()
+    ball = Ball(x=brick.box.left - 2, y=brick.y, dx=3, dy=1)
+    bounced, hit = bounce_off_brick(ball, (brick,))
+    assert hit == brick
+    assert (bounced.dx, bounced.dy) == (-3, 1)
+
+
+def test_ball_hitting_a_brick_on_the_right_side_goes_right() -> None:
+    brick = _brick()
+    ball = Ball(x=brick.box.right + 2, y=brick.y, dx=-3, dy=1)
+    bounced, hit = bounce_off_brick(ball, (brick,))
+    assert hit == brick
+    assert (bounced.dx, bounced.dy) == (3, 1)
+
+
+def test_ball_touching_two_bricks_hits_the_one_it_reaches_into_deepest() -> None:
+    left = Brick(x=-30, y=100, color="red", points=7)
+    right = Brick(x=30, y=100, color="green", points=3)
+    ball = Ball(x=10, y=100 - 12, dx=0, dy=4)
+    _, hit = bounce_off_brick(ball, (left, right))
+    assert hit == right
+
+
+def test_falling_ball_on_the_paddle_hits_it() -> None:
+    paddle = Paddle()
+    assert hits_paddle(_falling_ball(0, paddle), paddle)
+
+
+def test_rising_ball_does_not_hit_the_paddle() -> None:
+    paddle = Paddle()
+    assert not hits_paddle(Ball(x=0, y=paddle.y, dx=2, dy=4), paddle)
+
+
+def test_falling_ball_beside_the_paddle_does_not_hit_it() -> None:
+    paddle = Paddle()
+    ball = _falling_ball(paddle.box.right + 50, paddle)
+    assert not hits_paddle(ball, paddle)
+
+
+def test_falling_ball_below_the_paddle_centre_passes() -> None:
+    paddle = Paddle()
+    ball = Ball(x=0, y=paddle.y - 1, dx=2, dy=-4)
+    assert ball.box.overlaps(paddle.box)
+    assert not hits_paddle(ball, paddle)
+
+
+def test_falling_ball_level_with_the_paddle_centre_hits() -> None:
+    paddle = Paddle()
+    assert hits_paddle(Ball(x=0, y=paddle.y, dx=2, dy=-4), paddle)
+
+
+def test_falling_ball_above_the_paddle_centre_hits() -> None:
+    paddle = Paddle()
+    assert hits_paddle(Ball(x=0, y=paddle.y + 1, dx=2, dy=-4), paddle)
+
+
+def test_corner_hit_moving_mostly_up_reflects_dy() -> None:
+    brick = _brick()
+    # Reaches 3 px into the brick sideways and 3.5 px upwards: a corner hit.
+    ball = Ball(
+        x=brick.box.left - HALF + 3, y=brick.box.bottom - HALF + 3.5, dx=1, dy=4
+    )
+    bounced, hit = bounce_off_brick(ball, (brick,))
+    assert hit == brick
+    assert (bounced.dx, bounced.dy) == (1, -4)
+
+
+def test_corner_hit_moving_mostly_sideways_reflects_dx() -> None:
+    brick = _brick()
+    # Reaches 3.5 px into the brick sideways and 3 px upwards: a corner hit.
+    ball = Ball(
+        x=brick.box.left - HALF + 3.5, y=brick.box.bottom - HALF + 3, dx=4, dy=1
+    )
+    bounced, hit = bounce_off_brick(ball, (brick,))
+    assert hit == brick
+    assert (bounced.dx, bounced.dy) == (-4, 1)
+
+
+def _speed(ball: Ball) -> float:
+    return math.hypot(ball.dx, ball.dy)
+
+
+def test_speed_up_multiplies_the_speed_by_the_factor() -> None:
+    ball = Ball(x=0, y=0, dx=3, dy=4)
+    assert _speed(speed_up(ball)) == pytest.approx(5 * constants.BALL_SPEEDUP_FACTOR)
+
+
+def test_speed_up_keeps_the_direction() -> None:
+    faster = speed_up(Ball(x=1, y=2, dx=-3, dy=4))
+    assert (faster.x, faster.y) == (1, 2)
+    assert faster.dx / faster.dy == pytest.approx(-3 / 4)
+    assert faster.dx < 0 < faster.dy
+
+
+def test_speed_up_never_exceeds_the_maximum_speed() -> None:
+    ball = Ball(x=0, y=0, dx=0, dy=constants.BALL_MAX_SPEED - 0.1)
+    assert _speed(speed_up(ball)) == pytest.approx(constants.BALL_MAX_SPEED)
+
+
+def test_speed_up_leaves_a_ball_at_the_maximum_speed_alone() -> None:
+    ball = Ball(x=0, y=0, dx=0, dy=-constants.BALL_MAX_SPEED)
+    assert speed_up(ball) == ball
+
+
+def test_speed_up_leaves_a_standing_ball_alone() -> None:
+    ball = Ball(x=0, y=0, dx=0, dy=0)
+    assert speed_up(ball) == ball

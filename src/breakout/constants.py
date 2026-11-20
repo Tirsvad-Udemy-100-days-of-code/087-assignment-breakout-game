@@ -48,6 +48,8 @@ PADDLE_BOUNCE_MAX_SIDEWAYS: Final[float] = 0.8
 BALL_SPEEDUP_EVERY: Final[int] = 4
 BALL_SPEEDUP_FACTOR: Final[float] = 1.1
 BALL_MAX_SPEED: Final[float] = 12.0
+## Below this difference (px) of the two overlap depths a brick hit is a corner hit.
+BRICK_CORNER_TOLERANCE: Final[float] = 1.0
 ## @}
 
 ## @name Bricks
@@ -68,6 +70,8 @@ BRICK_ROW_COLORS: Final[tuple[str, ...]] = (
 )
 ## Points per row, same order as BRICK_ROW_COLORS.
 BRICK_ROW_POINTS: Final[tuple[int, ...]] = (7, 7, 5, 3, 3, 1)
+## Points of the top-scoring rows; the first hit on one speeds the ball up.
+BRICK_TOP_POINTS: Final[int] = max(BRICK_ROW_POINTS)
 ## @}
 
 ## @name Game
@@ -86,4 +90,7 @@ SCORE_Y: Final[float] = 250.0
 TEXT_COLOR: Final[str] = "white"
 FONT: Final[tuple[str, int, str]] = ("Courier", 24, "bold")
 MESSAGE_FONT: Final[tuple[str, int, str]] = ("Courier", 36, "bold")
+MESSAGE_Y: Final[float] = -60.0
+WIN_MESSAGE: Final[str] = "YOU WIN!  Press space"
+LOSE_MESSAGE: Final[str] = "GAME OVER  Press space"
 ## @}

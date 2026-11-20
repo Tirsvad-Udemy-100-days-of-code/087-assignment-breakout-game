@@ -7,6 +7,8 @@ from dataclasses import replace
 
 from breakout import constants
 from breakout.domain.ball import Ball
+from breakout.domain.brick import Brick
+from breakout.domain.geometry import Box
 from breakout.domain.paddle import Paddle
 
 
@@ -39,6 +41,32 @@ def has_fallen_out(ball: Ball) -> bool:
     return ball.box.top < constants.BOTTOM_WALL
 
 
+def hits_paddle(ball: Ball, paddle: Paddle) -> bool:
+    """@brief Tell whether a falling ball touches the paddle.
+
+    @param ball The ball after it has moved.
+    @param paddle The paddle.
+    @return True when the ball is falling, overlaps the paddle and its centre is
+            at or above the paddle centre (so the side and underside miss).
+    """
+    return ball.dy < 0 and ball.y >= paddle.y and ball.box.overlaps(paddle.box)
+
+
+def speed_up(ball: Ball) -> Ball:
+    """@brief Make the ball faster by BALL_SPEEDUP_FACTOR, up to BALL_MAX_SPEED.
+
+    The direction is kept. A ball already at or above the maximum is unchanged.
+
+    @param ball The ball.
+    @return A ball with the new speed.
+    """
+    speed = math.hypot(ball.dx, ball.dy)
+    if speed == 0 or speed >= constants.BALL_MAX_SPEED:
+        return ball
+    scale = min(constants.BALL_SPEEDUP_FACTOR, constants.BALL_MAX_SPEED / speed)
+    return replace(ball, dx=ball.dx * scale, dy=ball.dy * scale)
+
+
 def bounce_off_paddle(ball: Ball, paddle: Paddle) -> Ball:
     """@brief Bounce a falling ball off the paddle.
 
@@ -50,10 +78,58 @@ def bounce_off_paddle(ball: Ball, paddle: Paddle) -> Ball:
     @param paddle The paddle.
     @return The bounced ball, or the same ball when it does not hit the paddle.
     """
-    if ball.dy >= 0 or not ball.box.overlaps(paddle.box):
+    if not hits_paddle(ball, paddle):
         return ball
     offset = max(-1.0, min(1.0, (ball.x - paddle.x) / (paddle.width / 2)))
     speed = math.hypot(ball.dx, ball.dy)
     dx = offset * constants.PADDLE_BOUNCE_MAX_SIDEWAYS * speed
     dy = math.sqrt(speed**2 - dx**2)
     return replace(ball, y=paddle.box.top + ball.size / 2, dx=dx, dy=dy)
+
+
+def _overlap_depth(a: Box, b: Box) -> tuple[float, float]:
+    """@brief How far two overlapping boxes reach into each other.
+
+    @return The overlap along x and along y.
+    """
+    depth_x = min(a.right, b.right) - max(a.left, b.left)
+    depth_y = min(a.top, b.top) - max(a.bottom, b.bottom)
+    return depth_x, depth_y
+
+
+def bounce_off_brick(
+    ball: Ball, bricks: tuple[Brick, ...]
+) -> tuple[Ball, Brick | None]:
+    """@brief Bounce the ball off the brick it hits, if any.
+
+    When the ball touches several bricks at once, the one it reaches into
+    deepest is hit. The ball is reflected on the axis where it reaches into the
+    brick the least: a hit on the side reverses dx, a hit from below or above
+    reverses dy. In a corner hit (the two depths differ by less than
+    BRICK_CORNER_TOLERANCE) the axis of the larger absolute velocity component
+    is reflected instead.
+
+    @param ball The ball after it has moved.
+    @param bricks The bricks that are still standing.
+    @return The ball (bounced when a brick was hit) and the brick that was hit,
+            or the same ball and None.
+    """
+    touched = [brick for brick in bricks if ball.box.overlaps(brick.box)]
+    if not touched:
+        return ball, None
+
+    def depth(brick: Brick) -> float:
+        depth_x, depth_y = _overlap_depth(ball.box, brick.box)
+        return depth_x * depth_y
+
+    brick = max(touched, key=depth)
+    depth_x, depth_y = _overlap_depth(ball.box, brick.box)
+    if abs(depth_x - depth_y) < constants.BRICK_CORNER_TOLERANCE:
+        reflect_x = abs(ball.dx) > abs(ball.dy)
+    else:
+        reflect_x = depth_x < depth_y
+    if reflect_x:
+        dx = -abs(ball.dx) if ball.x < brick.x else abs(ball.dx)
+        return replace(ball, dx=dx), brick
+    dy = -abs(ball.dy) if ball.y < brick.y else abs(ball.dy)
+    return replace(ball, dy=dy), brick
