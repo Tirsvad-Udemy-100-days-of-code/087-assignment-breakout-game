@@ -11,6 +11,8 @@ from breakout.domain.rules import (
     bounce_off_paddle,
     bounce_off_walls,
     has_fallen_out,
+    hits_paddle,
+    speed_up,
 )
 from breakout.domain.status import GameStatus
 
@@ -49,6 +51,8 @@ class GameSession:
         self._score = 0
         self._lives = constants.STARTING_LIVES
         self._status = GameStatus.PLAYING
+        self._paddle_hits = 0
+        self._top_row_hit = False
 
     @property
     def paddle(self) -> Paddle:
@@ -103,16 +107,49 @@ class GameSession:
         if self._status is not GameStatus.PLAYING:
             return
         ball = bounce_off_walls(self._ball.advanced())
-        ball = bounce_off_paddle(ball, self._paddle)
-        ball, brick = bounce_off_brick(ball, self._bricks)
-        if brick is not None:
-            self._bricks = tuple(b for b in self._bricks if b is not brick)
-            self._score += brick.points
+        ball = self._bounce_off_paddle(ball)
+        ball = self._bounce_off_brick(ball)
         self._ball = ball
         if not self._bricks:
             self._status = GameStatus.WON
         elif has_fallen_out(ball):
             self._lose_a_life()
+
+    def _bounce_off_paddle(self, ball: Ball) -> Ball:
+        """@brief Bounce the ball off the paddle and count the hit.
+
+        @param ball The ball after it has moved.
+        @return The ball, faster on every BALL_SPEEDUP_EVERY-th paddle hit.
+        """
+        if not hits_paddle(ball, self._paddle):
+            return ball
+        ball = bounce_off_paddle(ball, self._paddle)
+        self._paddle_hits += 1
+        if self._paddle_hits % constants.BALL_SPEEDUP_EVERY == 0:
+            ball = speed_up(ball)
+        return ball
+
+    def _bounce_off_brick(self, ball: Ball) -> Ball:
+        """@brief Bounce the ball off a brick, remove it and score it.
+
+        @param ball The ball after the paddle.
+        @return The ball, faster at the first hit on a top-scoring brick.
+        """
+        ball, brick = bounce_off_brick(ball, self._bricks)
+        if brick is None:
+            return ball
+        self._bricks = tuple(b for b in self._bricks if b is not brick)
+        self._score += brick.points
+        if brick.points == constants.BRICK_TOP_POINTS and not self._top_row_hit:
+            self._top_row_hit = True
+            ball = speed_up(ball)
+        return ball
+
+    def _serve_new_ball(self) -> None:
+        """@brief Serve a ball at the normal speed and restart its counters."""
+        self._ball = Ball.at_start()
+        self._paddle_hits = 0
+        self._top_row_hit = False
 
     def _lose_a_life(self) -> None:
         """@brief Take a life and serve a new ball, or end the game."""
@@ -120,4 +157,4 @@ class GameSession:
         if self._lives == 0:
             self._status = GameStatus.LOST
         else:
-            self._ball = Ball.at_start()
+            self._serve_new_ball()

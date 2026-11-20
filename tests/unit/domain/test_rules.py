@@ -11,6 +11,8 @@ from breakout.domain.rules import (
     bounce_off_paddle,
     bounce_off_walls,
     has_fallen_out,
+    hits_paddle,
+    speed_up,
 )
 
 HALF = constants.BALL_SIZE / 2
@@ -183,3 +185,50 @@ def test_ball_touching_two_bricks_hits_the_one_it_reaches_into_deepest() -> None
     ball = Ball(x=10, y=100 - 12, dx=0, dy=4)
     _, hit = bounce_off_brick(ball, (left, right))
     assert hit == right
+
+
+def test_falling_ball_on_the_paddle_hits_it() -> None:
+    paddle = Paddle()
+    assert hits_paddle(_falling_ball(0, paddle), paddle)
+
+
+def test_rising_ball_does_not_hit_the_paddle() -> None:
+    paddle = Paddle()
+    assert not hits_paddle(Ball(x=0, y=paddle.y, dx=2, dy=4), paddle)
+
+
+def test_falling_ball_beside_the_paddle_does_not_hit_it() -> None:
+    paddle = Paddle()
+    ball = _falling_ball(paddle.box.right + 50, paddle)
+    assert not hits_paddle(ball, paddle)
+
+
+def _speed(ball: Ball) -> float:
+    return math.hypot(ball.dx, ball.dy)
+
+
+def test_speed_up_multiplies_the_speed_by_the_factor() -> None:
+    ball = Ball(x=0, y=0, dx=3, dy=4)
+    assert _speed(speed_up(ball)) == pytest.approx(5 * constants.BALL_SPEEDUP_FACTOR)
+
+
+def test_speed_up_keeps_the_direction() -> None:
+    faster = speed_up(Ball(x=1, y=2, dx=-3, dy=4))
+    assert (faster.x, faster.y) == (1, 2)
+    assert faster.dx / faster.dy == pytest.approx(-3 / 4)
+    assert faster.dx < 0 < faster.dy
+
+
+def test_speed_up_never_exceeds_the_maximum_speed() -> None:
+    ball = Ball(x=0, y=0, dx=0, dy=constants.BALL_MAX_SPEED - 0.1)
+    assert _speed(speed_up(ball)) == pytest.approx(constants.BALL_MAX_SPEED)
+
+
+def test_speed_up_leaves_a_ball_at_the_maximum_speed_alone() -> None:
+    ball = Ball(x=0, y=0, dx=0, dy=-constants.BALL_MAX_SPEED)
+    assert speed_up(ball) == ball
+
+
+def test_speed_up_leaves_a_standing_ball_alone() -> None:
+    ball = Ball(x=0, y=0, dx=0, dy=0)
+    assert speed_up(ball) == ball

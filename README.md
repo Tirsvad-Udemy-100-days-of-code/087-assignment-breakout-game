@@ -36,6 +36,10 @@ The repository is built in seven small steps. Each step has a screenshot below a
 | 1 | A black window and a paddle that follows the arrow keys | ![Step 1: window and paddle](docs/images/step-1.png) |
 | 2 | A moving ball that bounces off the top and side walls | ![Step 2: ball and wall bounce](docs/images/step-2.png) |
 | 3 | The ball bounces off the paddle at an angle that depends on where it hits | ![Step 3: paddle bounce](docs/images/step-3.png) |
+| 4 | A wall of six rows of coloured bricks | ![Step 4: wall of bricks](docs/images/step-4.png) |
+| 5 | The ball breaks bricks and the score grows | ![Step 5: brick collision and score](docs/images/step-5.png) |
+| 6 | Three lives, a game over, a win and a restart with `space` | ![Step 6: lives and game over](docs/images/step-6.png) |
+| 7 | The ball speeds up as the game goes on | ![Step 7: speed-up](docs/images/step-7.png) |
 
 Source comments are Doxygen blocks; `Doxyfile` builds the reference.
 

@@ -68,6 +68,8 @@ BRICK_ROW_COLORS: Final[tuple[str, ...]] = (
 )
 ## Points per row, same order as BRICK_ROW_COLORS.
 BRICK_ROW_POINTS: Final[tuple[int, ...]] = (7, 7, 5, 3, 3, 1)
+## Points of the top-scoring rows; the first hit on one speeds the ball up.
+BRICK_TOP_POINTS: Final[int] = max(BRICK_ROW_POINTS)
 ## @}
 
 ## @name Game

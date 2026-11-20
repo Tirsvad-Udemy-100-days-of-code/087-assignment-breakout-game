@@ -41,6 +41,31 @@ def has_fallen_out(ball: Ball) -> bool:
     return ball.box.top < constants.BOTTOM_WALL
 
 
+def hits_paddle(ball: Ball, paddle: Paddle) -> bool:
+    """@brief Tell whether a falling ball touches the paddle.
+
+    @param ball The ball after it has moved.
+    @param paddle The paddle.
+    @return True when the ball is falling and overlaps the paddle.
+    """
+    return ball.dy < 0 and ball.box.overlaps(paddle.box)
+
+
+def speed_up(ball: Ball) -> Ball:
+    """@brief Make the ball faster by BALL_SPEEDUP_FACTOR, up to BALL_MAX_SPEED.
+
+    The direction is kept. A ball already at or above the maximum is unchanged.
+
+    @param ball The ball.
+    @return A ball with the new speed.
+    """
+    speed = math.hypot(ball.dx, ball.dy)
+    if speed == 0 or speed >= constants.BALL_MAX_SPEED:
+        return ball
+    scale = min(constants.BALL_SPEEDUP_FACTOR, constants.BALL_MAX_SPEED / speed)
+    return replace(ball, dx=ball.dx * scale, dy=ball.dy * scale)
+
+
 def bounce_off_paddle(ball: Ball, paddle: Paddle) -> Ball:
     """@brief Bounce a falling ball off the paddle.
 
@@ -52,7 +77,7 @@ def bounce_off_paddle(ball: Ball, paddle: Paddle) -> Ball:
     @param paddle The paddle.
     @return The bounced ball, or the same ball when it does not hit the paddle.
     """
-    if ball.dy >= 0 or not ball.box.overlaps(paddle.box):
+    if not hits_paddle(ball, paddle):
         return ball
     offset = max(-1.0, min(1.0, (ball.x - paddle.x) / (paddle.width / 2)))
     speed = math.hypot(ball.dx, ball.dy)
